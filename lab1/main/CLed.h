@@ -18,6 +18,7 @@ class CLed{
         CLed(int port);
         void tick();
         void setLedState(LedStatus x);
+        LedStatus getLedState();
     
     private:
         LedStatus m_state = OFF;

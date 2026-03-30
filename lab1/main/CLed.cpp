@@ -75,3 +75,7 @@ void CLed::setLedState(LedStatus x){
     m_state = x;
           
 }
+
+LedStatus CLed::getLedState(){
+    return m_state;
+}
