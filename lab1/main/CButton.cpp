@@ -7,6 +7,7 @@
 CButton::CButton(int port){
     m_pinNumber = (gpio_num_t)port;
     ESP_LOGI(LogName, "Configure port [%d] to input!!!", port);
+    gpio_set_pull_mode(m_pinNumber, GPIO_PULLDOWN_ONLY);
     gpio_reset_pin(m_pinNumber);
     gpio_set_direction(m_pinNumber, GPIO_MODE_INPUT);
 }
@@ -23,12 +24,10 @@ void CButton::tick(){;
             break;
         case PRESSED:
             if ((esp_timer_get_time() - m_lastPulse) > BUTTON_DELAY_LONGPRESS) {
-                if (gpio_get_level(m_pinNumber)) { 
                     ESP_LOGI(LogName, "BUTTON LONGPRESS");
                     m_lastPulse = esp_timer_get_time();
-                    m_state = IDLE;
+                    m_state = LONGPRESSED;
                     longPress();
-                }
             }
             else if (gpio_get_level(m_pinNumber)) {
                     ESP_LOGI(LogName, "BUTTON RELEASED");
@@ -51,6 +50,13 @@ void CButton::tick(){;
                 m_state = IDLE;
                 singleClick();
             }
+            break;
+        case LONGPRESSED:
+            if (!gpio_get_level(m_pinNumber))
+            {
+                ESP_LOGI(LogName, "BUTTON STILL PRESSED");
+            }
+            else m_state = IDLE;
             break;
         default:
             break;

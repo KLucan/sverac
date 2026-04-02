@@ -1,5 +1,6 @@
 ### User
 
+*.zip
 .vscode
 
 ### ESP IDF generated:

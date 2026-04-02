@@ -4,7 +4,7 @@
 #ifndef _CButton_h
 #define _CButton_h
 
-enum ButtonState{IDLE, PRESSED, JUST_RELEASED};
+enum ButtonState{IDLE, PRESSED, JUST_RELEASED, LONGPRESSED};
 
 #define BUTTON_DELAY_DOUBLECLICK 150000L // ~150ms
 #define BUTTON_DELAY_LONGPRESS 1000000L // ~1s
