@@ -111,7 +111,7 @@ dht22_reading_t DHT22::getReading() {
     }
 
     if (bitIndex == 40) {
-        reading.humidity = (float)data[0] + ((float)data[1] / 10.0f);
+        reading.humidity = ((int16_t)(data[0] << 8) | data[1]) / 10.0f;
         reading.temperature = ((int16_t)(data[2] << 8) | data[3]) / 10.0f;
         reading.checksum = data[4];
 

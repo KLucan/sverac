@@ -1,12 +1,15 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/gpio.h"
+#include "driver/adc.h"
 #include "esp_log.h"
 #include "esp_attr.h"
 #include "DHT22.h"
+#include "VMA320.h"
 
 #define BUTTON_GPIO GPIO_NUM_13
 #define DHT_GPIO GPIO_NUM_15
+#define VMA_CHANNEL ADC1_CHANNEL_6
 #define RETRY_COUNT 5
 
 static const char *TAG = "MAIN";
@@ -27,18 +30,21 @@ static void IRAM_ATTR button_pressed_isr(void *arg)
 static void button_task(void *arg)
 {
     DHT22 *dht = new DHT22(DHT_GPIO);
+    VMA320 *vma = new VMA320(VMA_CHANNEL);
     dht22_reading_t dht_reading = {0};
+    vma320_reading_t vma_reading = {0};
 
     while (true) {
         ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
         ESP_LOGI(TAG, "Button pressed");
-        //dht->printWave();
         for (int i = 0; i<RETRY_COUNT;i++){
             dht_reading = dht->getReading();
             if (dht_reading.valid) break;
         }
-        ESP_LOGI(TAG, "DHT22 temperature: %.2f", dht_reading.temperature);
+        vma_reading = vma->getReading();
+        ESP_LOGI(TAG, "DHT22 temperature: %.2f C", dht_reading.temperature);
+        ESP_LOGI(TAG, "VMA320 temperature: %.2f C", vma_reading.temperature);
         vTaskDelay(pdMS_TO_TICKS(200));
         gpio_intr_enable(BUTTON_GPIO);
     }
