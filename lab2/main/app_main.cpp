@@ -7,6 +7,7 @@
 
 #define BUTTON_GPIO GPIO_NUM_13
 #define DHT_GPIO GPIO_NUM_15
+#define RETRY_COUNT 5
 
 static const char *TAG = "MAIN";
 static TaskHandle_t button_task_handle = NULL;
@@ -26,13 +27,18 @@ static void IRAM_ATTR button_pressed_isr(void *arg)
 static void button_task(void *arg)
 {
     DHT22 *dht = new DHT22(DHT_GPIO);
+    dht22_reading_t dht_reading = {0};
 
     while (true) {
         ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
         ESP_LOGI(TAG, "Button pressed");
-        dht->getReading();
-
+        //dht->printWave();
+        for (int i = 0; i<RETRY_COUNT;i++){
+            dht_reading = dht->getReading();
+            if (dht_reading.valid) break;
+        }
+        ESP_LOGI(TAG, "DHT22 temperature: %.2f", dht_reading.temperature);
         vTaskDelay(pdMS_TO_TICKS(200));
         gpio_intr_enable(BUTTON_GPIO);
     }
@@ -48,7 +54,7 @@ extern "C" void app_main(void)
     io_conf.intr_type = GPIO_INTR_NEGEDGE;
     gpio_config(&io_conf);
 
-    xTaskCreate(button_task, "button_task", 4096, NULL, 10, &button_task_handle);
+    xTaskCreate(button_task, "button_task", 8192, NULL, 10, &button_task_handle);
 
     gpio_install_isr_service(0);
     gpio_isr_handler_add(BUTTON_GPIO, button_pressed_isr, NULL);
