@@ -1,0 +1,46 @@
+# CMakeLists.txt — Template for the main/ component of an ESP-IDF v5.4 project
+# =============================================================================
+# Place this file in your project's main/ directory.
+# Rename to CMakeLists.txt .
+#
+# USAGE:
+#   1. List all your .cpp source files in the SRCS line.
+#   2. List all ESP-IDF components your code REQUIRES.
+#      (e.g. driver for GPIO, esp_timer for timing, esp_adc for ADC, etc.)
+#   3. List components needed only during build in PRIV_REQUIRES.
+#
+# ESP-IDF v5.4 component dependencies:
+#   - driver           → GPIO, UART, I2C, SPI, etc.
+#   - esp_timer        → esp_timer_get_time() (high-resolution timer)
+#   - esp_adc          → ADC oneshot & calibration (for analog sensors)
+#   - esp_driver_uart  → UART driver (if using UART)
+#   - log              → ESP_LOGx macros
+#   - freertos         → FreeRTOS kernel
+#   - spi_flash        → (often needed as private dependency)
+# =============================================================================
+
+idf_component_register(
+    SRCS
+        "app_main.cpp"
+        # TODO: Add your driver .cpp files here:
+        # "CLed.cpp"
+        # "CButton.cpp"
+        # "CDHT22.cpp"
+        # "CVMA320.cpp"
+        # "segment_bitbang.cpp"
+
+    PRIV_REQUIRES
+        spi_flash
+
+    REQUIRES
+        driver
+        esp_timer
+        # TODO: Add component dependencies for the drivers you use:
+        # esp_adc          # uncomment if using ADC (analog sensors)
+        # esp_driver_uart  # uncomment if using UART
+        # log              # (usually included automatically)
+        # freertos         # (usually included automatically)
+
+    INCLUDE_DIRS
+        ""
+)

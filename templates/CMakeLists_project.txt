@@ -1,0 +1,21 @@
+# CMakeLists.txt — Project-level template for an ESP-IDF v5.4 project
+# =============================================================================
+# Place this file in your project's root directory.
+# Rename to CMakeLists.txt .
+#
+# This is the minimal project CMakeLists for ESP-IDF v5.4.
+# The project name should match your project directory.
+# =============================================================================
+
+# The following lines of boilerplate have to be in your project's
+# CMakeLists in this exact order for cmake to work correctly
+cmake_minimum_required(VERSION 3.16)
+
+include($ENV{IDF_PATH}/tools/cmake/project.cmake)
+
+# Optional: Enable "minimal build" to reduce compile time
+# (only builds components that your project actually uses)
+# idf_build_set_property(MINIMAL_BUILD ON)
+
+# TODO: Change the project name to match your directory/application.
+project(my_esp32_project)
