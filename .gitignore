@@ -2,6 +2,8 @@
 
 *.zip
 .vscode
+*.pdf
+*.md
 
 ### ESP IDF generated:
 
